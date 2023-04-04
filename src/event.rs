@@ -287,6 +287,10 @@ impl MidiMessage {
         const LENGTH_BY_STATUS: [u8; 16] = [0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 1, 1, 2, 0];
         LENGTH_BY_STATUS[(status >> 4) as usize] as usize
     }
+    pub(crate) fn packet_length(cin: u4) -> usize {
+        const LENGTH_BY_CIN: [u8; 16] =     [0, 0, 2, 3, 0, 1, 0, 0, 3, 3, 3, 3, 2, 2, 3, 1];
+        LENGTH_BY_CIN[u8::from(cin) as usize] as usize
+    }
 
     /// Extract the data bytes from a raw slice.
     pub(crate) fn read_data_u8(status: u8, raw: &mut &[u8]) -> Result<[u7; 2]> {
@@ -368,10 +372,6 @@ impl MidiMessage {
             MidiMessage::NoteOn { key, vel } => out.write(&[key.as_int(), vel.as_int()])?,
             MidiMessage::Aftertouch { key, vel } => out.write(&[key.as_int(), vel.as_int()])?,
             MidiMessage::Controller { controller, value } => {
-                out.write(&[controller.as_int(), value.as_int()])?
-            }
-            MidiMessage::ProgramChange { program } => out.write(&[program.as_int()])?,
-            MidiMessage::ChannelAftertouch { vel } => out.write(&[vel.as_int()])?,
             MidiMessage::PitchBend { bend } => {
                 let raw = bend.0.as_int();
                 out.write(&[(raw & 0x7F) as u8, (raw >> 7) as u8])?
@@ -555,6 +555,10 @@ impl<'a> MetaMessage<'a> {
             0x03 => MetaMessage::TrackName(data),
             0x04 => MetaMessage::InstrumentName(data),
             0x05 => MetaMessage::Lyric(data),
+            0x06 => MetaMessage::Marker(data),
+            0x07 => MetaMessage::CuePoint(data),
+            0x08 => MetaMessage::ProgramName(data),
+            0x09 => MetaMessage::DeviceName(data),
             0x06 => MetaMessage::Marker(data),
             0x07 => MetaMessage::CuePoint(data),
             0x08 => MetaMessage::ProgramName(data),
