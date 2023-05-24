@@ -270,7 +270,7 @@ impl<'a> SystemCommon<'a> {
         Ok(ev)
     }
 
-    fn write<W: Write>(&self, out: &mut W) -> WriteResult<W> {
+    pub(crate) fn write<W: Write>(&self, out: &mut W) -> WriteResult<W> {
         match self {
             SystemCommon::SysEx(data) => {
                 out.write(&[0xF0])?;

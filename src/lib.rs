@@ -166,6 +166,11 @@
 #![cfg_attr(not(any(test, feature = "std")), no_std)]
 #![warn(missing_docs)]
 
+#[cfg(feature = "embedded")]
+extern crate embedded_hal;
+#[cfg(feature = "embedded")]
+extern crate usb_device;
+
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
@@ -210,16 +215,28 @@ mod prelude {
 }
 
 mod arena;
+mod buffer;
+pub mod class;
+pub mod embedded;
 mod event;
 pub mod io;
 pub mod live;
+pub mod packet;
 mod primitive;
 mod riff;
 mod smf;
 pub mod stream;
+pub mod usb;
 
 #[cfg(feature = "std")]
 pub use crate::smf::write_std;
+#[cfg(feature = "embedded")]
+pub use crate::{
+    class::MidiClass,
+    packet::{UsbMidiPacket, CIN},
+    usb::MidiDevice,
+};
+
 #[cfg(feature = "alloc")]
 pub use crate::{
     arena::Arena,
