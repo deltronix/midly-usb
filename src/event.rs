@@ -288,7 +288,7 @@ impl MidiMessage {
         LENGTH_BY_STATUS[(status >> 4) as usize] as usize
     }
     pub(crate) fn packet_length(cin: u4) -> usize {
-        const LENGTH_BY_CIN: [u8; 16] =     [0, 0, 2, 3, 0, 1, 0, 0, 3, 3, 3, 3, 2, 2, 3, 1];
+        const LENGTH_BY_CIN: [u8; 16] = [0, 0, 2, 3, 0, 1, 0, 0, 3, 3, 3, 3, 2, 2, 3, 1];
         LENGTH_BY_CIN[u8::from(cin) as usize] as usize
     }
 
@@ -378,6 +378,7 @@ impl MidiMessage {
             }
         }
         Ok(())
+        }
     }
 }
 
