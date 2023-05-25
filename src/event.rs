@@ -368,10 +368,6 @@ impl MidiMessage {
             MidiMessage::NoteOn { key, vel } => out.write(&[key.as_int(), vel.as_int()])?,
             MidiMessage::Aftertouch { key, vel } => out.write(&[key.as_int(), vel.as_int()])?,
             MidiMessage::Controller { controller, value } => {
-                out.write(&[controller.as_int(), value.as_int()])?
-            }
-            MidiMessage::ProgramChange { program } => out.write(&[program.as_int()])?,
-            MidiMessage::ChannelAftertouch { vel } => out.write(&[vel.as_int()])?,
             MidiMessage::PitchBend { bend } => {
                 let raw = bend.0.as_int();
                 out.write(&[(raw & 0x7F) as u8, (raw >> 7) as u8])?
